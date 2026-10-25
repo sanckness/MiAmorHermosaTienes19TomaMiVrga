@@ -5,6 +5,7 @@ import random
 import textwrap
 from pathlib import Path
 
+
 # ==============================================
 # EL TESORO MÁS BONITO DEL GRAND LINE
 # ==============================================
@@ -40,10 +41,11 @@ for clave, valor in valores.items():
         st.session_state[clave] = valor
 
 
+
 def mostrar_html(contenido):
-    """Muestra HTML sin convertirlo en bloque de código."""
-    contenido = textwrap.dedent(contenido).strip()
-    st.markdown(contenido, unsafe_allow_html=True)
+    """Renderiza las cartas como HTML real."""
+    st.html(textwrap.dedent(contenido).strip())
+
 
 
 def tarjeta(titulo, texto, emoji="💗"):
