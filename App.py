@@ -1,76 +1,85 @@
 
 import streamlit as st
 import streamlit.components.v1 as components
-import base64
-import os
 import random
+import textwrap
 from pathlib import Path
 
-# ==========================================
-# CONFIGURACIÓN PERSONALIZADA
-# ==========================================
+# ==============================================
+# EL TESORO MÁS BONITO DEL GRAND LINE
+# ==============================================
 
-NOMBRE_ELLA = "Mami shica"
-NOMBRE_TUYO = "Tu Papi rico"
-TITULO = "El tesoro más bonito del Grand Line"
+ELLA = "Mami shica"
+YO = "Tu Papi rico"
 
 st.set_page_config(
-    page_title="Para mi Mami shica 💗",
+    page_title="El universo de Mami shica 💗",
     page_icon="💖",
     layout="wide",
-    initial_sidebar_state="collapsed",
+    initial_sidebar_state="collapsed"
 )
 
-# ==========================================
+# ==============================================
 # ESTADO DE LA AVENTURA
-# ==========================================
+# ==============================================
 
-if "islas" not in st.session_state:
-    st.session_state.islas = []
+valores = {
+    "islas": [],
+    "actual": None,
+    "vela": False,
+    "deseo": False,
+    "tesoro": False,
+    "mensaje": None,
+    "planes": [],
+    "reto": None,
+    "capsula": False,
+}
 
-if "deseo" not in st.session_state:
-    st.session_state.deseo = False
-
-if "vela" not in st.session_state:
-    st.session_state.vela = False
-
-if "tesoro" not in st.session_state:
-    st.session_state.tesoro = False
-
-if "carta" not in st.session_state:
-    st.session_state.carta = False
+for clave, valor in valores.items():
+    if clave not in st.session_state:
+        st.session_state[clave] = valor
 
 
-def visitar_isla(numero):
+def mostrar_html(contenido):
+    """Muestra HTML sin convertirlo en bloque de código."""
+    contenido = textwrap.dedent(contenido).strip()
+    st.markdown(contenido, unsafe_allow_html=True)
+
+
+def tarjeta(titulo, texto, emoji="💗"):
+    mostrar_html(
+        f'<div class="tarjeta">'
+        f'<div class="emoji-grande">{emoji}</div>'
+        f'<h3>{titulo}</h3>'
+        f'<p>{texto}</p>'
+        f'</div>'
+    )
+
+
+def visitar(numero):
     if numero not in st.session_state.islas:
         st.session_state.islas.append(numero)
+    st.session_state.actual = numero
 
 
-def audio_base64():
-    ruta = Path("assets/one_piece.mp3")
-    if ruta.exists():
-        return base64.b64encode(ruta.read_bytes()).decode()
-    return None
-
-
-# ==========================================
-# ESTILO GENERAL
-# ==========================================
+# ==============================================
+# DISEÑO MÁGICO
+# ==============================================
 
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Great+Vibes&family=Quicksand:wght@400;500;600;700&display=swap');
 
-html, body, [class*="css"], .stApp {
-    font-family: 'Quicksand', sans-serif;
-}
-
 .stApp {
     background:
-        radial-gradient(ellipse at 15% 20%, #56265b55, transparent 45%),
-        radial-gradient(ellipse at 90% 80%, #872a6d44, transparent 40%),
-        linear-gradient(145deg, #08071e, #171034 52%, #090817);
-    color: #fff4fc;
+      radial-gradient(ellipse at 20% 10%, #7b286055, transparent 45%),
+      radial-gradient(ellipse at 85% 65%, #743c9855, transparent 45%),
+      linear-gradient(145deg, #08091d, #20102f, #11091e);
+    color: #fff0fa;
+}
+
+html, body, p, div, span, button {
+    font-family: 'Quicksand', sans-serif;
 }
 
 .block-container {
@@ -80,501 +89,504 @@ html, body, [class*="css"], .stApp {
 }
 
 h1, h2, h3 {
+    color: #ffe1f2 !important;
+}
+
+.titulo {
+    font-family: 'Great Vibes', cursive;
     text-align: center;
-    color: #ffe0f5 !important;
+    font-size: clamp(56px, 9vw, 105px);
+    line-height: 1.2;
+    background: linear-gradient(
+        90deg, #ffa8dc, #fff3bc, #ff9adb
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 15px #ff72bb66);
+    margin: 30px auto;
+}
+
+.seccion {
+    font-family: 'Great Vibes', cursive;
+    font-size: clamp(40px, 6vw, 65px);
+    color: #ffc3e5;
+    text-align: center;
+    margin: 50px auto 20px;
+}
+
+.subtitulo {
+    text-align: center;
+    font-size: 18px;
+    color: #f9cce9;
+}
+
+.tarjeta, .carta {
+    background: rgba(255, 255, 255, 0.065);
+    border: 1px solid rgba(255, 181, 223, 0.3);
+    border-radius: 25px;
+    padding: 30px;
+    margin: 18px 0;
+    text-align: center;
+    box-shadow: 0 15px 40px #00000033;
+}
+
+.tarjeta {
+    min-height: 190px;
+}
+
+.tarjeta h3 {
+    color: #ffe4a8 !important;
+    margin: 10px 0;
+}
+
+.tarjeta p, .carta p {
+    color: #ffe7f5;
+    font-size: 18px;
+    line-height: 2;
+    margin-bottom: 22px;
+}
+
+.carta p:last-child {
+    margin-bottom: 0;
+}
+
+.emoji-grande {
+    font-size: 43px;
+    text-align: center;
+}
+
+.firma {
+    font-family: 'Great Vibes', cursive;
+    font-size: 38px !important;
+    color: #ffe7aa !important;
+}
+
+.tesoro {
+    background: linear-gradient(
+        145deg, #40214f, #752e66, #3c2054
+    );
+    border: 2px solid #f8d6a0;
+    border-radius: 28px;
+    padding: 35px;
+    box-shadow: 0 0 40px #f07bb255;
+    text-align: center;
+}
+
+.tesoro p {
+    font-size: 19px;
+    line-height: 2.1;
+    color: #fff1f8;
+}
+
+.nota {
+    text-align: center;
+    color: #e8bddd;
+    font-size: 15px;
 }
 
 .stButton > button {
-    border: 1px solid #ff92d4 !important;
-    background: linear-gradient(120deg, #a22d8b, #e54a9c) !important;
-    color: white !important;
-    border-radius: 30px !important;
-    font-weight: bold !important;
-    padding: 0.6rem 1.5rem !important;
     width: 100%;
+    color: white !important;
+    background: linear-gradient(
+        120deg, #a12d83, #e54f9e
+    ) !important;
+    border: 1px solid #ffaad9 !important;
+    border-radius: 28px !important;
+    padding: 12px 16px !important;
+    font-weight: 700;
     transition: 0.3s;
 }
 
 .stButton > button:hover {
     transform: translateY(-3px);
-    box-shadow: 0 0 25px #ff66bb99;
+    box-shadow: 0 0 25px #ff8fc366;
 }
 
-.magic-title {
-    font-family: 'Great Vibes', cursive;
-    font-size: clamp(55px, 9vw, 105px);
-    line-height: 1.2;
-    text-align: center;
-    background: linear-gradient(90deg, #ffc7e9, #fff5ba, #ff99d3);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    filter: drop-shadow(0 0 12px #f568b855);
-    margin: 25px 0;
-}
-
-.subtitle {
-    text-align: center;
-    font-size: 20px;
-    color: #f8d5ec;
-    letter-spacing: 1px;
-}
-
-.glass {
-    background: rgba(255, 255, 255, 0.065);
-    border: 1px solid rgba(255, 188, 225, 0.25);
-    border-radius: 23px;
-    padding: 30px;
-    margin: 20px 0;
-    box-shadow: 0 10px 40px #00000030;
-    backdrop-filter: blur(8px);
-}
-
-.romantic {
-    text-align: center;
-    line-height: 2.1;
-    color: #ffe7f5;
-    font-size: 18px;
-}
-
-.section-title {
-    font-family: 'Great Vibes', cursive;
-    text-align: center;
-    font-size: 55px;
-    color: #ffb8e2;
-    margin-top: 40px;
-}
-
-.treasure {
-    background: linear-gradient(135deg, #4a2355, #983d78, #57346d);
-    border: 2px solid #ffe1a7;
-    padding: 30px;
-    border-radius: 25px;
-    text-align: center;
-    box-shadow: 0 0 35px #e18ec355;
-}
-
-.small-note {
-    color: #e9bddd;
-    text-align: center;
-    font-size: 14px;
+[data-testid="stExpander"] {
+    background: #ffffff0a;
+    border-radius: 14px;
 }
 
 .stProgress > div > div {
-    background: linear-gradient(90deg, #ed68c1, #ffe8a1);
+    background: linear-gradient(
+        90deg, #f45baa, #ffe5a4
+    );
 }
 
-[data-testid="stImage"] img {
-    border-radius: 20px;
-}
-
-footer {
-    visibility: hidden;
+hr {
+    border-color: #edb7dd44;
 }
 </style>
 """, unsafe_allow_html=True)
 
 
-# ==========================================
-# FONDO ANIMADO
-# ==========================================
+# ==============================================
+# CIELO ANIMADO
+# ==============================================
 
 components.html("""
 <style>
-body { margin:0; overflow:hidden; background:transparent; }
-.star {
-    position:absolute;
-    color:white;
-    animation: shine 3s infinite alternate;
+body {
+    margin: 0;
+    background: transparent;
+    overflow: hidden;
 }
-.heart {
-    position:absolute;
-    bottom:-40px;
-    animation: floatUp linear infinite;
+.estrella {
+    position: absolute;
+    color: #fff1c9;
+    animation: brillar 3s infinite alternate;
 }
-@keyframes shine {
-    from {opacity:.1;transform:scale(.5)}
-    to {opacity:1;transform:scale(1.4)}
+.corazon {
+    position: absolute;
+    bottom: -30px;
+    animation: subir linear infinite;
 }
-@keyframes floatUp {
-    from {transform:translateY(0);opacity:0}
-    15% {opacity:.85}
-    85% {opacity:.7}
-    to {transform:translateY(-700px);opacity:0}
+@keyframes brillar {
+    from { opacity: .15; transform: scale(.6); }
+    to { opacity: 1; transform: scale(1.4); }
+}
+@keyframes subir {
+    from { transform: translateY(0); opacity: 0; }
+    20% { opacity: 1; }
+    80% { opacity: .8; }
+    to { transform: translateY(-500px); opacity: 0; }
 }
 </style>
 <script>
-for(let i=0;i<75;i++){
-    const el=document.createElement("span");
-    el.className="star";
-    el.textContent="✦";
-    el.style.left=Math.random()*100+"%";
-    el.style.top=Math.random()*100+"%";
-    el.style.fontSize=(Math.random()*12+4)+"px";
-    el.style.animationDelay=Math.random()*4+"s";
-    document.body.appendChild(el);
+for(let i=0;i<80;i++){
+    let e=document.createElement("span");
+    e.className="estrella";
+    e.textContent="✦";
+    e.style.left=Math.random()*100+"%";
+    e.style.top=Math.random()*100+"%";
+    e.style.fontSize=(Math.random()*12+3)+"px";
+    e.style.animationDelay=Math.random()*3+"s";
+    document.body.appendChild(e);
 }
-for(let i=0;i<18;i++){
-    const el=document.createElement("span");
-    el.className="heart";
-    el.textContent=["💗","💕","✨","🌸"][Math.floor(Math.random()*4)];
-    el.style.left=Math.random()*100+"%";
-    el.style.fontSize=(Math.random()*17+10)+"px";
-    el.style.animationDuration=(Math.random()*9+8)+"s";
-    el.style.animationDelay=(-Math.random()*15)+"s";
-    document.body.appendChild(el);
+for(let i=0;i<16;i++){
+    let e=document.createElement("span");
+    e.className="corazon";
+    e.textContent=["💗","💕","✨","🌸"][
+        Math.floor(Math.random()*4)
+    ];
+    e.style.left=Math.random()*100+"%";
+    e.style.animationDuration=(Math.random()*8+7)+"s";
+    e.style.animationDelay=(-Math.random()*12)+"s";
+    document.body.appendChild(e);
 }
 </script>
-""", height=125)
+""", height=110)
 
 
-# ==========================================
+# ==============================================
 # PORTADA
-# ==========================================
+# ==============================================
 
-st.markdown(
-    '<div class="magic-title">El tesoro más bonito<br>del Grand Line</div>',
-    unsafe_allow_html=True
-)
-
-st.markdown(
-    f'<div class="subtitle">Una aventura creada para {NOMBRE_ELLA} 💗</div>',
-    unsafe_allow_html=True
-)
-
-st.markdown(f"""
-<div class="glass romantic">
-    🏴‍☠️ Había una vez un pirata que recorrió miles de mares
-    buscando el tesoro más extraordinario del universo.
-
-    Pero un día descubrió que el tesoro no estaba escondido
-    en ninguna isla...
-
-    <b>Tenía una sonrisa hermosa, unos ojitos preciosos
-    y un nombre que hacía latir su corazón.</b>
-
-    Ese nombre era <b>{NOMBRE_ELLA}</b>.
-
-    <br><br>
-    Y aquel pirata era...
-
-    <b>{NOMBRE_TUYO}</b> 💗
+mostrar_html("""
+<div class="titulo">
+    El tesoro más bonito<br>
+    del Grand Line
 </div>
-""", unsafe_allow_html=True)
+""")
 
-st.markdown(
-    '<p class="small-note">🌊 Nuestra aventura está por comenzar 🌊</p>',
-    unsafe_allow_html=True
-)
+mostrar_html(f"""
+<p class="subtitulo">
+    🏴‍☠️ Una aventura escrita con amor para {ELLA} 💗
+</p>
+""")
 
-# ==========================================
+mostrar_html(f"""
+<div class="carta">
+    <p>Había una vez un pirata que soñaba con
+    encontrar el tesoro más extraordinario
+    de todos los mares.</p>
+
+    <p>Navegó entre estrellas, tormentas,
+    aventuras y miles de sueños.</p>
+
+    <p>Pero un día descubrió que el tesoro
+    más bonito no estaba escondido en
+    ninguna isla.</p>
+
+    <p>Tenía una sonrisa preciosa,
+    una mirada especial y un nombre
+    que hacía latir su corazón.</p>
+
+    <p><strong>Ese nombre era {ELLA}.</strong></p>
+
+    <p>Y aquel pirata era...</p>
+
+    <p class="firma">{YO} 💗</p>
+</div>
+""")
+
+
+# ==============================================
 # MÚSICA
-# ==========================================
+# ==============================================
 
-st.markdown(
-    '<div class="section-title">La melodía de nuestra aventura 🎵</div>',
-    unsafe_allow_html=True
-)
+mostrar_html("""
+<div class="seccion">
+    La melodía de nuestra aventura 🎶
+</div>
+""")
 
-audio = audio_base64()
+ruta_audio = Path("assets/one_piece.mp3")
 
-if audio:
-    st.audio(
-        "assets/one_piece.mp3",
-        format="audio/mpeg"
-    )
+if ruta_audio.is_file():
+    st.audio(str(ruta_audio), format="audio/mpeg")
 else:
     st.info(
-        "🎶 Para escuchar nuestro soundtrack de One Piece, "
-        "coloca el archivo one_piece.mp3 dentro de la carpeta assets."
+        "🎵 Coloca tu canción de One Piece como "
+        "assets/one_piece.mp3 para escucharla aquí."
     )
 
-st.caption("Presiona reproducir para comenzar a escuchar la música.")
 
+# ==============================================
+# MAPA DE SEIS ISLAS
+# ==============================================
 
-# ==========================================
-# MAPA DEL AMOR
-# ==========================================
-
-st.markdown(
-    '<div class="section-title">🗺️ El mapa de nuestro amor</div>',
-    unsafe_allow_html=True
-)
-
-st.markdown("""
-<div class="glass romantic">
-    Seis islas mágicas.
-
-    Seis pequeños pedacitos de mi corazón.
-
-    En cada isla encontrarás algo que quiero decirte.
-
-    Explóralas todas para desbloquear
-    <b>el tesoro legendario de nuestro amor.</b>
+mostrar_html("""
+<div class="seccion">
+    El mapa de nuestro amor 🗺️
 </div>
-""", unsafe_allow_html=True)
+""")
+
+mostrar_html("""
+<div class="carta">
+    <p>Mi princesa, he escondido seis pedacitos
+    de mi corazón alrededor de este océano.</p>
+
+    <p>Cada isla tiene algo especial
+    que quiero decirte.</p>
+
+    <p>Explóralas todas para encontrar
+    nuestro tesoro legendario.</p>
+
+    <p><strong>¿Lista para navegar conmigo? 💗</strong></p>
+</div>
+""")
 
 islas = [
-    ("🌸", "Isla de tu sonrisa"),
-    ("💌", "Isla de las cartas"),
-    ("🌟", "Isla de las estrellas"),
-    ("💍", "Isla de las promesas"),
-    ("🎂", "Isla del cumpleaños"),
-    ("👑", "Isla de mi reina"),
+    ("🌸", "Tu sonrisa"),
+    ("💌", "La carta secreta"),
+    ("🌟", "Nuestro universo"),
+    ("💍", "Mis promesas"),
+    ("🎂", "Tu cumpleaños"),
+    ("👑", "Mi reina"),
 ]
 
-visitadas = len(st.session_state.islas)
-
-st.progress(visitadas / 6)
-st.markdown(
-    f'<p class="small-note">✨ Islas descubiertas: {visitadas} de 6</p>',
-    unsafe_allow_html=True
-)
+cantidad = len(st.session_state.islas)
+st.progress(cantidad / 6)
+st.caption(f"✨ Islas descubiertas: {cantidad}/6")
 
 columnas = st.columns(3)
 
-for indice, (emoji, nombre) in enumerate(islas):
-    with columnas[indice % 3]:
-        st.markdown(f"### {emoji}")
-        st.markdown(f"**{nombre}**")
+for numero, (emoji, nombre) in enumerate(islas):
+    with columnas[numero % 3]:
+        mostrar_html(
+            f'<div class="tarjeta">'
+            f'<div class="emoji-grande">{emoji}</div>'
+            f'<h3>{nombre}</h3>'
+            f'</div>'
+        )
 
-        if indice in st.session_state.islas:
+        if numero in st.session_state.islas:
             st.caption("💗 Descubierta")
 
-        if st.button(
-            "Descubrir isla ✨",
-            key=f"isla_{indice}"
-        ):
-            visitar_isla(indice)
-
-            st.session_state["isla_actual"] = indice
+        if st.button("Explorar ✨", key=f"i_{numero}"):
+            visitar(numero)
             st.rerun()
 
 
-# ==========================================
-# CONTENIDO DE LAS ISLAS
-# ==========================================
+# ==============================================
+# CONTENIDOS DE LAS ISLAS
+# ==============================================
 
-actual = st.session_state.get("isla_actual", None)
+actual = st.session_state.actual
 
 if actual is not None:
 
-    st.markdown("---")
+    st.divider()
 
     emoji, nombre = islas[actual]
 
-    st.markdown(
-        f'<div class="section-title">{emoji} {nombre}</div>',
-        unsafe_allow_html=True
+    mostrar_html(
+        f'<div class="seccion">{emoji} {nombre}</div>'
     )
 
+    # ISLA 1
     if actual == 0:
-        st.markdown("""
-        <div class="glass romantic">
-            Si me preguntaran cuál es el paisaje
-            más bonito que he visto en toda mi vida,
-            no diría el océano, ni las estrellas,
-            ni un atardecer.
+        mostrar_html("""
+        <div class="carta">
+            <p>Mi niña hermosa...</p>
 
-            <br><br>
+            <p>Si me preguntaran cuál es el paisaje
+            más bonito que he visto en mi vida,
+            no diría el océano ni las estrellas.</p>
 
-            Diría que es tu sonrisa.
+            <p>Diría que es tu sonrisa.</p>
 
-            <br><br>
+            <p>Porque tienes una manera
+            tan especial de iluminar mis días.</p>
 
-            Porque tienes esa forma tan tuya
-            de hacer que incluso mis días más difíciles
-            se sientan bonitos.
+            <p>A veces quizá no te das cuenta
+            de lo hermosa que eres.</p>
 
-            <br><br>
+            <p>Pero quiero que sepas que
+            mi corazón siempre encuentra
+            motivos para admirarte.</p>
 
-            Mi niña preciosa, ojalá nunca olvides
-            lo hermosa que eres,
-            incluso en los días en que tú no logres verlo.
-
-            <br><br>
-
-            <b>Yo siempre voy a encontrar belleza en ti. 💗</b>
+            <p><strong>Ojalá nunca dejes
+            de sonreír, mi princesa. 💗</strong></p>
         </div>
-        """, unsafe_allow_html=True)
+        """)
 
+    # ISLA 2
     elif actual == 1:
-        st.markdown("""
-        <div class="glass romantic">
-            💌 <b>Mi carta para ti</b>
+        mostrar_html(f"""
+        <div class="carta">
+            <p class="firma">Mi carta para ti 💌</p>
 
-            <br><br>
+            <p><strong>Mi {ELLA}:</strong></p>
 
-            Mi Mami shica:
+            <p>Hoy quiero celebrar mucho más
+            que tu cumpleaños.</p>
 
-            <br><br>
-
-            Hoy quiero celebrar mucho más que tu cumpleaños.
-
-            Quiero celebrar que existes.
+            <p>Quiero celebrar que existes.
             Que llegaste a este mundo y que,
             entre tantas personas y tantos caminos,
-            la vida permitió que nos encontráramos.
+            la vida permitió que nos encontráramos.</p>
 
-            <br><br>
+            <p>A veces pienso en lo increíble
+            que es que una sola persona pueda
+            convertirse en tantas cosas bonitas
+            al mismo tiempo.</p>
 
-            A veces pienso en lo increíble que es
-            que una sola persona pueda convertirse
-            en tantas cosas bonitas al mismo tiempo.
-
-            <br><br>
-
-            En mi alegría.
-            En mi paz.
-            En mi sonrisa favorita.
+            <p>En mi alegría.<br>
+            En mi paz.<br>
+            En mi sonrisa favorita.<br>
             En alguien a quien quiero cuidar,
-            abrazar y hacer feliz.
+            abrazar y hacer feliz.</p>
 
-            <br><br>
-
-            Si pudiera regalarte algo imposible,
+            <p>Si pudiera regalarte algo imposible,
             te regalaría la oportunidad
             de verte a través de mis ojos,
-            aunque fuera por un instante.
+            aunque fuera por un instante.</p>
 
-            Así entenderías por qué eres
-            tan especial para mí.
+            <p>Así entenderías por qué
+            eres tan especial para mí.</p>
 
-            <br><br>
+            <p>Quiero que nunca dudes
+            de lo mucho que vales,
+            de lo hermosa que eres
+            y de todas las cosas bonitas
+            que mereces en esta vida.</p>
 
-            Y aunque no siempre encuentre
+            <p>Y aunque no siempre encuentre
             las palabras perfectas,
-            quiero que sepas que mi corazón
-            te elige con muchísimo amor.
+            quiero que sepas que
+            te quiero con muchísimo amor.</p>
 
-            <br><br>
+            <p>Feliz cumpleaños,
+            mi niña preciosa.</p>
 
-            Feliz cumpleaños, mi niña hermosa.
+            <p>Con todo mi cariño,</p>
 
-            <br><br>
-
-            Con muchísimo amor,
-
-            <b>Tu Papi rico 💗</b>
+            <p class="firma">{YO} 💗</p>
         </div>
-        """, unsafe_allow_html=True)
+        """)
 
+    # ISLA 3
     elif actual == 2:
-        st.markdown("""
-        <div class="glass romantic">
-            Dicen que en el universo existen
-            más estrellas de las que podríamos contar.
+        mostrar_html("""
+        <div class="carta">
+            <p>Dicen que el universo tiene
+            millones de estrellas.</p>
 
-            <br><br>
+            <p>Pero si cada estrella representara
+            una razón por la que te quiero,
+            todavía me faltaría cielo.</p>
 
-            Pero si cada estrella representara
-            una razón para amarte,
-            todavía me faltaría cielo.
+            <p>✨ Tu sonrisa.<br>
+            ✨ Tus ojitos.<br>
+            ✨ Tu manera de ser.<br>
+            ✨ Tus ocurrencias.<br>
+            ✨ Nuestros momentos.<br>
+            ✨ La alegría de tenerte en mi vida.</p>
 
-            <br><br>
-
-            ✨ Amo tu sonrisa.
-
-            <br>
-            ✨ Amo tus ojitos.
-
-            <br>
-            ✨ Amo tu manera de ser.
-
-            <br>
-            ✨ Amo compartir mis días contigo.
-
-            <br>
-            ✨ Amo nuestras pequeñas locuras.
-
-            <br>
-            ✨ Amo que seas tú, simplemente tú.
-
-            <br><br>
-
-            <b>Eres mi constelación favorita. 🌌</b>
+            <p><strong>Eres mi constelación
+            favorita. 🌌</strong></p>
         </div>
-        """, unsafe_allow_html=True)
+        """)
 
-        if st.button("🌠 Pedir un deseo a una estrella"):
+        if st.button("🌠 Pedir un deseo"):
             st.session_state.deseo = True
             st.balloons()
 
         if st.session_state.deseo:
             st.success(
-                "Que cada sueño que guardas en tu corazón "
-                "encuentre un camino para hacerse realidad. 💗"
+                "✨ Deseo que tus sueños se cumplan "
+                "y que nunca te falten razones para sonreír."
             )
 
+    # ISLA 4
     elif actual == 3:
-        st.markdown("""
-        <div class="glass romantic">
-            💍 <b>Mis promesas para ti</b>
+        mostrar_html("""
+        <div class="carta">
+            <p>💍 Mis promesas para ti.</p>
 
-            <br><br>
+            <p>Prometo seguir buscando
+            maneras de hacerte sonreír.</p>
 
-            Prometo seguir buscando maneras
-            de hacerte sonreír.
+            <p>Prometo escucharte y cuidar
+            lo que sentimos.</p>
 
-            <br><br>
+            <p>Prometo apoyarte en tus sueños
+            y alegrarme por cada logro tuyo.</p>
 
-            Prometo escucharte y valorar
-            todo lo que sientes.
+            <p>Prometo esforzarme para construir
+            recuerdos bonitos contigo.</p>
 
-            <br><br>
+            <p>No puedo prometer que
+            todo será perfecto.</p>
 
-            Prometo acompañarte en tus sueños
-            y alegrarme de tus logros.
+            <p>Pero sí puedo prometer
+            que quiero poner amor,
+            paciencia y cariño
+            en nuestra historia.</p>
 
-            <br><br>
-
-            Prometo esforzarme para que nuestro amor
-            no sea solamente algo bonito que decimos,
-            sino algo bonito que construimos.
-
-            <br><br>
-
-            Porque no quiero que nuestra historia
-            sea perfecta.
-
-            <br><br>
-
-            <b>Quiero que sea verdadera,
-            bonita y nuestra. 💗</b>
+            <p><strong>Porque eres alguien
+            demasiado importante para mí. 💗</strong></p>
         </div>
-        """, unsafe_allow_html=True)
+        """)
 
+    # ISLA 5
     elif actual == 4:
-        st.markdown("""
-        <div class="glass romantic">
-            🎂 <b>¡FELIZ CUMPLEAÑOS, MAMI SHICA!</b>
+        mostrar_html(f"""
+        <div class="carta">
+            <p class="firma">
+                Feliz cumpleaños, {ELLA} 🎂
+            </p>
 
-            <br><br>
+            <p>Hoy es un día maravilloso
+            porque celebramos tu vida.</p>
 
-            Hoy el universo está de fiesta
-            porque un día como hoy nació
-            una personita demasiado especial.
+            <p>Quiero que este nuevo año
+            esté lleno de cosas bonitas,
+            sueños cumplidos, salud,
+            aventuras y felicidad.</p>
 
-            <br><br>
+            <p>Quiero que nunca olvides
+            cuánto mereces ser feliz.</p>
 
-            Deseo que este nuevo año de vida
-            te traiga aventuras hermosas,
-            tranquilidad, salud,
-            sueños cumplidos y mucho amor.
+            <p>Ahora cierra tus ojitos,
+            piensa en algo hermoso
+            y pide un deseo.</p>
 
-            <br><br>
-
-            Y deseo que nunca te falten
-            motivos para sonreír.
-
-            <br><br>
-
-            🎂 🕯️ 🎂
-
-            <br><br>
-
-            <b>Pide un deseo, mi amor.</b>
+            <p>🎂 🕯️ 🎂</p>
         </div>
-        """, unsafe_allow_html=True)
+        """)
 
         if not st.session_state.vela:
             if st.button("💨 Soplar la velita"):
@@ -583,175 +595,401 @@ if actual is not None:
                 st.rerun()
         else:
             st.success(
-                "✨ Velita apagada. "
+                "🎉 ¡Velita apagada! "
                 "Que tu deseo se haga realidad, princesa."
             )
 
+    # ISLA 6
     elif actual == 5:
-        st.markdown("""
-        <div class="glass romantic">
-            👑 <b>La reina de mi mundo</b>
+        mostrar_html("""
+        <div class="carta">
+            <p class="firma">Mi reina hermosa 👑</p>
 
-            <br><br>
+            <p>No necesitas una corona
+            para ser mi princesa.</p>
 
-            Mi Mami shica...
+            <p>No necesitas un castillo
+            para merecer lo mejor del mundo.</p>
 
-            <br><br>
+            <p>Mereces respeto,
+            cariño, paz y muchísima felicidad.</p>
 
-            No necesitas una corona
-            para ser mi reina.
+            <p>Me encanta pensar en todos
+            los pequeños momentos bonitos
+            que todavía podemos compartir.</p>
 
-            No necesitas un castillo
-            para merecer lo más bonito del mundo.
+            <p>Las risas que faltan.<br>
+            Las aventuras que nos esperan.<br>
+            Los abrazos inesperados.<br>
+            Los sueños que podemos cumplir.</p>
 
-            <br><br>
+            <p>Porque para mí eres
+            mucho más que una persona especial.</p>
 
-            Mereces respeto.
-            Mereces ternura.
-            Mereces tranquilidad.
-            Mereces amor del bonito.
-
-            <br><br>
-
-            Y si de mí depende,
-            quiero hacer todo lo posible
-            por regalarte momentos
-            que siempre quieras recordar.
-
-            <br><br>
-
-            Porque eres alguien
-            verdaderamente especial para mí.
-
-            <br><br>
-
-            <b>Mi niña preciosa, mi reina,
-            mi tesoro. 💗👑</b>
+            <p><strong>Eres mi reina,
+            mi niña preciosa
+            y mi tesoro más bonito. 💗</strong></p>
         </div>
-        """, unsafe_allow_html=True)
+        """)
 
 
-# ==========================================
-# ÁLBUM DE RECUERDOS
-# ==========================================
+# ==============================================
+# NUEVO: NUESTRO FUTURO JUNTOS
+# ==============================================
 
-st.markdown(
-    '<div class="section-title">📸 Nuestro pequeño universo</div>',
-    unsafe_allow_html=True
-)
+mostrar_html("""
+<div class="seccion">
+    Nuestro futuro juntos 💞
+</div>
+""")
 
-st.markdown("""
-<p class="small-note">
-Aquí viven algunos pedacitos de nuestra historia.
-</p>
-""", unsafe_allow_html=True)
+mostrar_html("""
+<div class="carta">
+    <p>No necesito fotografías para imaginar
+    todas las cosas bonitas que
+    quiero vivir contigo.</p>
 
-recuerdos = [
-    (
-        "Nuestra primera aventura 💗",
-        "Cada historia bonita tiene un comienzo."
-    ),
-    (
-        "Un momento inolvidable 🌸",
-        "Hay momentos que quisiera guardar para siempre."
-    ),
-    (
-        "Nosotros dos ✨",
-        "Mi lugar favorito siempre será donde podamos ser felices."
-    ),
+    <p>Porque nuestra historia
+    no solamente está hecha
+    de recuerdos.</p>
+
+    <p>También está hecha de
+    los momentos que todavía
+    nos esperan.</p>
+
+    <p><strong>Y quiero compartir
+    muchos de ellos contigo. 💗</strong></p>
+</div>
+""")
+
+# PLANES DE PAREJA
+
+planes = [
+    ("🌅", "Ver un atardecer juntos",
+     "Encontrar un lugar bonito y quedarnos "
+     "abrazaditos mirando el cielo."),
+
+    ("🍿", "Nuestra noche de películas",
+     "Mantas, comida rica, muchos abrazos "
+     "y una película que elijamos juntos."),
+
+    ("🌧️", "Una tarde de lluvia",
+     "Escuchar la lluvia mientras hablamos, "
+     "nos abrazamos y disfrutamos del momento."),
+
+    ("🍰", "Una cita sorpresa",
+     "Preparar un día especial "
+     "solo para consentirte."),
+
+    ("🌊", "Una aventura inolvidable",
+     "Conocer un lugar nuevo juntos "
+     "y crear otra historia para recordar."),
+
+    ("⭐", "Mirar las estrellas",
+     "Hablar de nuestros sueños "
+     "y de todo lo que queremos vivir."),
 ]
 
-columnas_fotos = st.columns(3)
+mostrar_html("""
+<div class="seccion">
+    Nuestra lista de aventuras ✨
+</div>
+""")
 
-for i, (titulo, mensaje) in enumerate(recuerdos):
-    with columnas_fotos[i]:
-        ruta = Path(f"assets/foto{i+1}.jpg")
-
-        if ruta.exists():
-            st.image(str(ruta), use_container_width=True)
-        else:
-            st.markdown(
-                f'<div class="glass romantic" '
-                f'style="min-height:180px;">'
-                f'📷<br><br>Foto {i+1}<br>💗</div>',
-                unsafe_allow_html=True
-            )
-
-        st.markdown(f"**{titulo}**")
-        st.caption(mensaje)
-
-
-# ==========================================
-# MENSAJES SORPRESA
-# ==========================================
-
-st.markdown(
-    '<div class="section-title">💖 Un mensajito del corazón</div>',
-    unsafe_allow_html=True
+st.caption(
+    "Selecciona los planes que quieras vivir conmigo."
 )
 
-mensajes = [
-    "Eres una de las coincidencias más bonitas de mi vida. 💗",
-    "Si la felicidad tuviera una sonrisa, seguramente sería la tuya. 🌸",
-    "Contigo hasta los momentos pequeños se vuelven especiales. ✨",
-    "Si pudiera escoger otra vez, me encantaría volver a encontrarte. 💌",
-    "No existe mapa que pueda medir todo el cariño que te tengo. 🏴‍☠️",
-    "Ojalá te veas siempre tan hermosa como yo te veo. 👑",
-]
+for i in range(0, len(planes), 2):
+    cols = st.columns(2)
 
-if st.button("💗 Descubrir otro mensajito"):
-    st.session_state["mensaje"] = random.choice(mensajes)
+    for j, col in enumerate(cols):
+        indice = i + j
 
-if "mensaje" in st.session_state:
-    st.markdown(
-        f'<div class="glass romantic">'
-        f'{st.session_state["mensaje"]}</div>',
-        unsafe_allow_html=True
+        if indice >= len(planes):
+            continue
+
+        emoji, nombre, descripcion = planes[indice]
+
+        with col:
+            tarjeta(nombre, descripcion, emoji)
+
+            marcado = indice in st.session_state.planes
+
+            if st.checkbox(
+                "💗 Quiero vivir esto contigo",
+                value=marcado,
+                key=f"plan_{indice}"
+            ):
+                if indice not in st.session_state.planes:
+                    st.session_state.planes.append(indice)
+            else:
+                if indice in st.session_state.planes:
+                    st.session_state.planes.remove(indice)
+
+seleccionados = len(st.session_state.planes)
+
+if seleccionados:
+    st.success(
+        f"💖 Tenemos {seleccionados} aventura(s) "
+        "marcadas para nuestro futuro."
     )
 
 
-# ==========================================
-# GRAN TESORO FINAL
-# ==========================================
+# ==============================================
+# JUEGO: NUESTRA CITA PERFECTA
+# ==============================================
+
+mostrar_html("""
+<div class="seccion">
+    Diseñemos nuestra cita perfecta 💕
+</div>
+""")
 
 st.markdown(
-    '<div class="section-title">💎 El tesoro legendario</div>',
-    unsafe_allow_html=True
+    "Escoge cómo te gustaría pasar "
+    "un día especial conmigo."
 )
 
-if len(st.session_state.islas) < 6:
+c1, c2 = st.columns(2)
 
-    faltan = 6 - len(st.session_state.islas)
+with c1:
+    lugar = st.selectbox(
+        "🌸 ¿Dónde vamos?",
+        [
+            "A ver el atardecer 🌅",
+            "A un café bonito ☕",
+            "A la playa 🌊",
+            "A un parque lleno de flores 🌷",
+            "A una cena romántica 🍽️"
+        ]
+    )
 
-    st.markdown(f"""
-    <div class="glass romantic">
-        🔒 Hay un tesoro escondido al final
-        de esta aventura.
+    comida = st.selectbox(
+        "🍓 ¿Qué comemos?",
+        [
+            "Pizza 🍕",
+            "Sushi 🍣",
+            "Hamburguesas 🍔",
+            "Postrecitos 🍰",
+            "Lo que se te antoje 💗"
+        ]
+    )
 
-        <br><br>
+with c2:
+    actividad = st.selectbox(
+        "✨ ¿Qué hacemos?",
+        [
+            "Tomarnos de la mano 💞",
+            "Ver una película 🍿",
+            "Contarnos secretos 💌",
+            "Escuchar música juntos 🎶",
+            "Mirar las estrellas 🌟"
+        ]
+    )
 
-        Para descubrirlo, todavía debes
-        visitar <b>{faltan} isla(s)</b>.
+    final_cita = st.selectbox(
+        "🌙 ¿Cómo termina?",
+        [
+            "Con un abrazo gigante 🫂",
+            "Con muchos besitos 😘",
+            "Con otra aventura 💗",
+            "Con una sorpresa 🎁"
+        ]
+    )
 
-        <br><br>
+if st.button("💘 Crear nuestra cita perfecta"):
+    mostrar_html(f"""
+    <div class="carta">
+        <p class="firma">Nuestra cita soñada 💗</p>
 
-        La aventura aún no termina, princesa.
+        <p>Primero iremos a:</p>
+        <p><strong>{lugar}</strong></p>
+
+        <p>Después comeremos:</p>
+        <p><strong>{comida}</strong></p>
+
+        <p>Y disfrutaremos de:</p>
+        <p><strong>{actividad}</strong></p>
+
+        <p>Hasta terminar nuestro día...</p>
+        <p><strong>{final_cita}</strong></p>
+
+        <p>Lo bonito no será el lugar.</p>
+
+        <p><strong>Será estar contigo. 💞</strong></p>
     </div>
-    """, unsafe_allow_html=True)
+    """)
+    st.balloons()
+
+
+# ==============================================
+# RETOS ROMÁNTICOS
+# ==============================================
+
+mostrar_html("""
+<div class="seccion">
+    Pequeñas misiones de amor 💗
+</div>
+""")
+
+retos = [
+    "💗 Dame un abrazo de al menos 20 segundos.",
+    "😘 Dame tres besitos sorpresa.",
+    "💌 Dime algo bonito que recuerdes de nosotros.",
+    "🌸 Dime qué aventura quieres vivir conmigo.",
+    "🎶 Escoge una canción para escuchar abrazaditos.",
+    "🫶 Cuéntame cuál es tu recuerdo favorito juntos.",
+    "⭐ Pide un deseo que podamos cumplir los dos.",
+    "🥹 Mírame a los ojitos y regálame una sonrisa."
+]
+
+if st.button("🎲 Descubrir nuestra misión"):
+    st.session_state.reto = random.choice(retos)
+
+if st.session_state.reto:
+    mostrar_html(
+        '<div class="carta">'
+        '<p class="firma">¡Misión desbloqueada!</p>'
+        f'<p>{st.session_state.reto}</p>'
+        '</div>'
+    )
+
+
+# ==============================================
+# CÁPSULA DEL TIEMPO
+# ==============================================
+
+mostrar_html("""
+<div class="seccion">
+    Una carta para nuestro futuro 💌
+</div>
+""")
+
+mostrar_html("""
+<div class="carta">
+    <p>Imagina que pasan muchos años
+    y volvemos a abrir esta página.</p>
+
+    <p>Quizá nuestras vidas hayan cambiado,
+    quizá hayamos conocido muchos lugares
+    y vivido incontables aventuras.</p>
+
+    <p>Pero quiero que al leer esto
+    recuerdes cuánto cariño había
+    detrás de este pequeño regalo.</p>
+
+    <p>Quise darte algo hecho con mi esfuerzo,
+    con mis pensamientos y con el deseo
+    de verte feliz.</p>
+
+    <p>Y si algún día volvemos a leerlo,
+    espero que sonriamos recordando
+    cómo comenzó esta aventura.</p>
+
+    <p><strong>Porque lo más bonito
+    nunca fue llegar a una isla.</strong></p>
+
+    <p><strong>Fue tener a alguien
+    con quien navegar. 💗</strong></p>
+</div>
+""")
+
+if st.button("⏳ Abrir mensaje del futuro"):
+    st.session_state.capsula = True
+
+if st.session_state.capsula:
+    mostrar_html(f"""
+    <div class="tesoro">
+        <p class="firma">Para nosotros, en el futuro 💗</p>
+
+        <p>Hola, mi {ELLA}.</p>
+
+        <p>Si estás leyendo esto otra vez,
+        quiero que recuerdes algo.</p>
+
+        <p>Hubo un día en el que
+        {YO} quiso construirte
+        un universo lleno de estrellas,
+        islas, cartas y sorpresas.</p>
+
+        <p>Y todo por una razón muy sencilla.</p>
+
+        <p><strong>Hacerte sonreír.</strong></p>
+
+        <p>Ojalá nuestra historia siga
+        llenándose de momentos bonitos.</p>
+
+        <p>Y ojalá nunca dejemos
+        de encontrar pequeñas razones
+        para elegirnos y cuidarnos.</p>
+
+        <p class="firma">Con todo mi amor 💗</p>
+    </div>
+    """)
+
+
+# ==============================================
+# MENSAJES INFINITOS
+# ==============================================
+
+mostrar_html("""
+<div class="seccion">
+    Una razón más para sonreír 💖
+</div>
+""")
+
+mensajes = [
+    "Tu sonrisa es mi paisaje favorito. 🌸",
+    "Me encanta la tranquilidad de estar contigo. 💗",
+    "Eres una de las coincidencias más bonitas de mi vida.",
+    "Contigo hasta los planes pequeños son especiales. ✨",
+    "Quiero seguir creando momentos felices a tu lado.",
+    "Ojalá nunca olvides lo mucho que vales. 👑",
+    "Me gusta imaginar nuevas aventuras contigo. 🏴‍☠️",
+    "Mi tesoro favorito siempre será verte feliz. 💕"
+]
+
+if st.button("💗 Dame otro mensajito"):
+    st.session_state.mensaje = random.choice(mensajes)
+
+if st.session_state.mensaje:
+    tarjeta(
+        "Solo para ti",
+        st.session_state.mensaje,
+        "💌"
+    )
+
+
+# ==============================================
+# EL TESORO FINAL
+# ==============================================
+
+mostrar_html("""
+<div class="seccion">
+    El tesoro legendario 💎
+</div>
+""")
+
+faltan = 6 - len(st.session_state.islas)
+
+if faltan > 0:
+
+    tarjeta(
+        "🔒 Tesoro sellado",
+        f"Debes descubrir {faltan} isla(s) más "
+        "para abrir el tesoro de nuestra aventura.",
+        "🗝️"
+    )
 
 else:
 
-    st.markdown("""
-    <div class="treasure">
-        <h2>🏆 ¡Encontraste el One Piece del amor!</h2>
-        <p>
-            Has recorrido todas las islas.
-
-            Ahora puedes abrir el tesoro
-            más importante de esta aventura.
-        </p>
-    </div>
-    """, unsafe_allow_html=True)
+    tarjeta(
+        "¡Todas las islas descubiertas!",
+        "Has encontrado las seis piezas "
+        "del mapa de mi corazón.",
+        "🏆"
+    )
 
     if st.button("💎 ABRIR EL TESORO LEGENDARIO"):
         st.session_state.tesoro = True
@@ -759,118 +997,103 @@ else:
 
     if st.session_state.tesoro:
 
-        st.markdown(f"""
-        <div class="treasure">
-            <h1>💗 EL VERDADERO TESORO 💗</h1>
+        mostrar_html(f"""
+        <div class="tesoro">
+            <p class="firma">
+                El verdadero tesoro 💗
+            </p>
 
-            <p style="font-size:19px;line-height:2.1;">
-                Mi {NOMBRE_ELLA}...
+            <p>Mi {ELLA}...</p>
 
-                <br><br>
+            <p>Después de navegar por
+            todos estos pequeños mundos,
+            has llegado hasta aquí.</p>
 
-                Si nuestra vida fuera una aventura
-                como las que soñábamos de pequeños,
-                yo navegaría todos los mares del mundo
-                con una sola ilusión.
+            <p>Tal vez esperabas encontrar
+            una montaña de oro,
+            joyas preciosas o
+            un cofre lleno de riquezas.</p>
 
-                <br><br>
+            <p>Pero hay algo que
+            ninguna de esas cosas
+            podría comprar.</p>
 
-                Seguir construyendo recuerdos contigo.
+            <p>La alegría de coincidir contigo.</p>
 
-                <br><br>
+            <p>La emoción de compartir
+            nuestras pequeñas aventuras.</p>
 
-                Porque después de buscar entre
-                islas, estrellas, promesas y sueños,
-                entendí algo maravilloso.
+            <p>Las sonrisas,
+            las conversaciones,
+            los abrazos y
+            los sueños que construimos.</p>
 
-                <br><br>
+            <p>Si yo fuera un pirata
+            navegando el Grand Line,
+            no necesitaría encontrar
+            ningún otro tesoro.</p>
 
-                El tesoro que tanto buscaba
-                nunca fue el oro.
+            <p>Porque al conocerte,
+            encontré algo
+            verdaderamente especial.</p>
 
-                <br><br>
+            <p><strong>Te encontré a ti.</strong></p>
 
-                Nunca fueron las joyas.
+            <p>Quise hacerte esta aventura
+            para que tengas un lugar
+            lleno de palabras bonitas
+            al que puedas regresar.</p>
 
-                <br><br>
+            <p>Un pequeño universo
+            hecho especialmente para ti.</p>
 
-                Nunca fue llegar al final del mapa.
+            <p>Porque mereces sentirte querida,
+            valorada y celebrada.</p>
 
-                <br><br>
+            <p>Y porque hoy,
+            en tu cumpleaños,
+            quiero desearte toda
+            la felicidad del mundo.</p>
 
-                <b>El tesoro siempre fuiste tú.</b>
+            <p class="firma">
+                Feliz cumpleaños,<br>
+                mi Mami shica hermosa.
+            </p>
 
-                <br><br>
+            <p>Que esta sea solo una
+            de muchísimas aventuras
+            que nos esperan.</p>
 
-                Tu sonrisa.
-                Tu manera de ser.
-                Tu existencia en mi vida.
+            <p>Con muchísimo amor,</p>
 
-                <br><br>
-
-                Y aunque esta página algún día
-                deje de tener animaciones,
-                y aunque se apaguen todas sus estrellas,
-                quiero que recuerdes algo.
-
-                <br><br>
-
-                Hay alguien que quiso crear
-                un pequeño universo solo
-                para verte sonreír.
-
-                <br><br>
-
-                Ese alguien soy yo.
-
-                <br><br>
-
-                <span style="font-size:29px;color:#ffe6a8;">
-                    Feliz cumpleaños,
-                    mi Mami shica hermosa.
-                </span>
-
-                <br><br>
-
-                Con muchísimo amor,
-
-                <br>
-
-                <b>{NOMBRE_TUYO} 💗</b>
+            <p class="firma">
+                Tu Papi rico 💗🏴‍☠️
             </p>
         </div>
-        """, unsafe_allow_html=True)
+        """)
 
         st.snow()
 
 
-# ==========================================
+# ==============================================
 # DESPEDIDA
-# ==========================================
+# ==============================================
 
-st.markdown("---")
+st.divider()
 
-st.markdown(f"""
-<div class="romantic">
-    🌙 ⭐ 🌸 💗 🌸 ⭐ 🌙
+mostrar_html(f"""
+<div class="carta">
+    <p>🌙 ⭐ 💗 ⭐ 🌙</p>
 
-    <br><br>
-
-    <span style="font-family:'Great Vibes',cursive;font-size:49px;">
+    <p class="firma">
         Te quiero hasta el infinito
         y mucho más allá.
-    </span>
+    </p>
 
-    <br><br>
+    <p>Una aventura de {YO}</p>
 
-    Una aventura de {NOMBRE_TUYO}
+    <p>Para {ELLA}</p>
 
-    <br>
-
-    Para {NOMBRE_ELLA}
-
-    <br><br>
-
-    🏴‍☠️💗
+    <p>🏴‍☠️💗</p>
 </div>
-""", unsafe_allow_html=True)
+""")
